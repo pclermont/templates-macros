@@ -37,6 +37,10 @@ Example:
 - compute-virtualmachine-params.yml
 - compute-virtualmachine-macros.j2
 
+Useful Links
+----------------
+https://docs.microsoft.com/en-US/azure/templates/
+
 Author Information
 ------------------
 Alan Pinard
