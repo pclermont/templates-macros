@@ -1,0 +1,97 @@
+virtualmachine:
+  name: 'string'
+  location: 'string'
+  tags: []
+  plan:
+    name:
+    publisher:
+    product:
+    promotioncode:
+  properties:
+    hardwareprofile:
+      vmsize:
+    storageprofile:
+      imagereference:
+        id: 'string'
+        publisher: 'string'
+        offer: 'string'
+        sku: 'string'
+        version: 'string'
+      osdisk:
+        ostype: 'string'
+        encryptionsettings:
+          diskencryptionkey:
+            secreturl: 'string'
+            sourcevault:
+              id: 'string'
+          keyencryptionkey:
+            keyurl: 'string'
+            sourcevault:
+              id: 'string'
+          enabled: bool
+        name: 'string'
+        vhd:
+          uri: 'string'
+        image:
+          uri: 'string'
+        caching: 'string'
+        createoption: 'string'
+        disksizegb: 'string'
+        manageddisk:
+          id: 'string'
+          storageaccounttype: 'string'
+      datadisks:
+        - lun: 'string'
+          name: 'string'
+          vhd:
+            uri: 'string'
+          image:
+            uri: 'string'
+          caching: 'string'
+          createoption: 'string'
+          disksizegb: 'string'
+          manageddisk:
+            id: 'string'
+            storageaccounttype: 'string'
+    osprofile:
+      computername: 'string'
+      adminusername: 'string'
+      adminpassword: 'string'
+      customdata: 'string'
+      windowsconfiguration:
+        provisionvmagent: bool
+        enableautomaticupdates: bool
+        timezone: 'string'
+        additionalunattendContent:
+          - passname: 'string'
+            componentname: 'string'
+            settingname: 'string'
+            content: 'string'
+        winrm:
+          listeners:
+            protocol: 'string'
+            certificateurl: 'string'
+      linuxconfiguration:
+        disablepasswordauthentication: bool
+        ssh:
+          publickeys:
+            - path: 'string'
+              keydata: 'string'
+      secrets:
+        sourcevault:
+          id: 'string'
+        vaultcertificates:
+          certificateurl: 'string'
+          certificatestore: 'string'
+    networkprofile:
+      networkinterfaces:
+        - id: 'string'
+          properties:
+            primary: bool
+    diagnosticsprofile:
+      bootdiagnostics:
+        enabled: bool
+        storageuri: 'sting'
+    availabilityset:
+      id:
+    licensetype: 'string'
