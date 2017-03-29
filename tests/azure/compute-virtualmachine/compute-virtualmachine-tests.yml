@@ -1,0 +1,78 @@
+---
+- name: full vars test
+  hosts: localhost  # use ansible installed locally
+  gather_facts: False
+  vars_files:
+    - vars/compute-virtualmachine-full-vars.yml
+  tasks:
+    - name: Run full vars template
+      template:
+          src: "compute-virtualmachine-template.j2"
+          dest: "./test.template"
+    - name: check if python thinks it's valid json
+      command: python -mjson.tool test.template
+
+- name: full no data disk vars test
+  hosts: localhost  # use ansible installed locally
+  gather_facts: False
+  vars_files:
+    - vars/compute-virtualmachine-nodatadisk-vars.yml
+  tasks:
+    - name: Run no data disk vars template
+      template:
+          src: "compute-virtualmachine-template.j2"
+          dest: "./test.template"
+    - name: check if python thinks it's valid json
+      command: python -mjson.tool test.template
+
+- name: full windows vars test
+  hosts: localhost  # use ansible installed locally
+  gather_facts: False
+  vars_files:
+    - vars/compute-virtualmachine-full-windows-vars.yml
+  tasks:
+    - name: Run full windows vars template
+      template:
+          src: "compute-virtualmachine-template.j2"
+          dest: "./test.template"
+    - name: check if python thinks it's valid json
+      command: python -mjson.tool test.template
+
+- name: full linux vars test
+  hosts: localhost  # use ansible installed locally
+  gather_facts: False
+  vars_files:
+    - vars/compute-virtualmachine-full-linux-vars.yml
+  tasks:
+    - name: Run full linux vars template
+      template:
+          src: "compute-virtualmachine-template.j2"
+          dest: "./test.template"
+    - name: check if python thinks it's valid json
+      command: python -mjson.tool test.template
+
+- name: least windows vars test
+  hosts: localhost  # use ansible installed locally
+  gather_facts: False
+  vars_files:
+    - vars/compute-virtualmachine-least-vars.yml
+  tasks:
+    - name: Run least windows vars template
+      template:
+          src: "compute-virtualmachine-template.j2"
+          dest: "./test.template"
+    - name: check if python thinks it's valid json
+      command: python -mjson.tool test.template
+
+######
+# THIS SHOULD ALWAYS BE THE LAST BIT
+######
+- name: cleanup
+  hosts: localhost
+  tasks:
+    - file:
+        path: "{{ item }}"
+        state: absent
+      with_items:
+        - test.template
+        - compute-virtualmachine-tests.retry

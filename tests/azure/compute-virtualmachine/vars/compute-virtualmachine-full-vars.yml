@@ -1,0 +1,114 @@
+virtualmachine:
+  name: 'namestring'
+  location: 'locationstring'
+  tags:
+    - mytag: 'tagvalue'
+  plan:
+    name: 'myplan'
+    publisher: 'mypublisher'
+    product: 'myproduct'
+    promotioncode: 'mypromotioncode'
+  properties:
+    hardwareprofile:
+      vmsize: 'Basic_A0'
+    storageprofile:
+      imagereference:
+        id: 'imagereference_id'
+        publisher: 'imagereference_publisher'
+        offer: 'imagereference_offer'
+        sku: 'imagereference_sku'
+        version: 'imagereference_version'
+      osdisk:
+        ostype: 'my_os_type'
+        encryptionsettings:
+          diskencryptionkey:
+            secreturl: 'my disk encryption secret url'
+            sourcevault:
+              id: 'my disk encryption source vault id'
+          keyencryptionkey:
+            keyurl: 'my key encryption key url'
+            sourcevault:
+              id: 'my key encryption source vault id'
+          enabled: True
+        name: 'my os disk name'
+        vhd:
+          uri: 'my os disk vhd url'
+        image:
+          uri: 'my os disk vhd image'
+        caching: 'my os disk caching'
+        createoption: 'my os disk create option'
+        disksizegb: 'osdisk size'
+        manageddisk:
+          id: 'my os disk managed disk id'
+          storageaccounttype: 'my storage account type for osdisk'
+      datadisks:
+        - lun: 'lun 1'
+          name: 'lun 1 name'
+          vhd:
+            uri: 'lun 1 vhd uri'
+          image:
+            uri: 'lun 1 image uri'
+          caching: 'lun 1 caching'
+          createoption: 'lun 1 createoption'
+          disksizegb: 'lun 1 size in GB'
+          manageddisk:
+            id: 'lun 1 managed disk id'
+            storageaccounttype: 'lun 1 managed disk storage'
+    osprofile:
+      computername: 'my computer name'
+      adminusername: 'my admin user'
+      adminpassword: 'my admin password'
+      customdata: 'my custom data'
+      windowsconfiguration:
+        provisionvmagent: True
+        enableautomaticupdates: False
+        timezone: 'my timezone'
+        additionalunattendcontent:
+          - passname: 'my passname'
+            componentname: 'my component name'
+            settingname: 'my setting name'
+            content: 'my content'
+        winrm:
+          listeners:
+            - protocol: 'my winrm protocol'
+              certificateurl: 'my winrm certificate URL'
+      linuxconfiguration:
+        disablepasswordauthentication: True
+        ssh:
+          publickeys:
+            pclermont:
+              path: 'my ssh public key path'
+              keydata: 'my ssh public key data'
+            alan:
+              path: 'Alans ssh public key path'
+              keydata: 'alan ssh public key data'
+      secrets:
+        - sourcevault:
+            id: 'my secrets source vault 1 id'
+          vaultcertificates:
+            - certificateurl: 'my secrets vault 1 certificates certificate1 url value'
+              certificatestore: 'my secrets vault 1 certificates certificate1 store value'
+            - certificateurl: 'my secrets vault 1 certificates certificate2 url value'
+              certificatestore: 'my secrets vault 1 certificates certificate2 store value'
+        - sourcevault:
+            id: 'my secrets source vault 2 id'
+          vaultcertificates:
+            - certificateurl: 'my secrets vault 2 certificates certificate1 url value'
+              certificatestore: 'my secrets vault 2 certificates certificate1 store value'
+            - certificateurl: 'my secrets vault 2 certificates certificate2 url value'
+              certificatestore: 'my secrets vault 2 certificates certificate2 store value'
+    networkprofile:
+      networkinterfaces:
+        - id: 'network interface 1'
+          properties:
+            primary: True
+        - id: 'network interface 2'
+          properties:
+            primary: False
+    diagnosticsprofile:
+      bootdiagnostics:
+        enabled: True
+        storageuri: 'my diagnostics storage uri'
+    availabilityset:
+      id: 'my availability set id'
+    licensetype: 'my license'

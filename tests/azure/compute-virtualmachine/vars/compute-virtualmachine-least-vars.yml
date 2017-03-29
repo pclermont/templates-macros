@@ -1,0 +1,37 @@
+virtualmachine:
+  name: 'namestring'
+  location: 'locationstring'
+  plan:
+    name: 'myplan'
+    publisher: 'mypublisher'
+    product: 'myproduct'
+    promotioncode: 'mypromotioncode'
+  properties:
+    hardwareprofile:
+      vmsize: 'Basic_A0'
+    storageprofile:
+      imagereference:
+        publisher: 'imagereference_publisher'
+        offer: 'imagereference_offer'
+        sku: 'imagereference_sku'
+        version: 'imagereference_version'
+      osdisk:
+        name: 'my os disk name'
+        vhd:
+          uri: 'my os disk vhd url'
+        image:
+          uri: 'my os disk vhd image'
+        caching: 'my os disk caching'
+        createoption: 'my os disk create option'
+    osprofile:
+      computername: 'my computer name'
+      adminusername: 'my admin user'
+      adminpassword: 'my admin password'
+      windowsconfiguration:
+        provisionvmagent: True
+        enableautomaticupdates: True
+    networkprofile:
+      networkinterfaces:
+        - id: 'network interface 1'
+          properties:
+            primary: True
