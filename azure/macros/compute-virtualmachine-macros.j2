@@ -1,4 +1,5 @@
 {%- macro virtualmachine(vm) -%}
+{
     "name": "{{ vm.name }}",
     "type": "Microsoft.Compute/virtualMachines",
     "apiVersion": "2016-04-30-preview",
@@ -11,28 +12,28 @@
         "product": "{{ vm.plan.product }}",
         "promotionCode": "{{ vm.plan.promotioncode }}"
     },
-    {% endif %}
+{% endif %}
     "properties": {
-    {%- if vm.properties.hardwareprofile is defined %}
         "hardwareProfile": {
             "vmSize": "{{ vm.properties.hardwareprofile.vmsize }}"
-        },
-    {%- endif %}
+        }
+    {%- if vm.properties.storageprofile is defined -%},
         "storageProfile": {
             "imageReference": {
-                "id": "{{ vm.properties.storageprofile.imagereference.id }}",
+                {% if vm.properties.storageprofile.imagereference.id is defined %}"id": "{{ vm.properties.storageprofile.imagereference.id }}",{% endif %}
                 "publisher": "{{ vm.properties.storageprofile.imagereference.publisher }}",
                 "offer": "{{ vm.properties.storageprofile.imagereference.offer }}",
                 "sku": "{{ vm.properties.storageprofile.imagereference.sku }}",
                 "version": "{{ vm.properties.storageprofile.imagereference.version }}"
             },
             "osDisk": {
-                "osType": "{{ vm.properties.storageprofile.osdisk.ostype }}",
+                {% if vm.properties.storageprofile.osdisk.ostype is defined %}"osType": "{{ vm.properties.storageprofile.osdisk.ostype }}",{% endif %}
+                {% if vm.properties.storageprofile.osdisk.encryptionsettings is defined %}
                 "encryptionSettings": {
                     "diskEncryptionKey": {
                         "secretUrl": "{{ vm.properties.storageprofile.osdisk.encryptionsettings.diskencryptionkey.secreturl }}",
                         "sourceVault": {
-                            "id": "{{ vm.properties.storageprofile.osdisk.encryptionsettings.diskencryption.sourcevault.id }}"
+                            "id": "{{ vm.properties.storageprofile.osdisk.encryptionsettings.diskencryptionkey.sourcevault.id }}"
                         }
                     },
                     "keyEncryptionKey": {
@@ -41,8 +42,9 @@
                             "id": "{{ vm.properties.storageprofile.osdisk.encryptionsettings.keyencryptionkey.sourcevault.id }}"
                         }
                     },
-                    "enabled": {{ vm.properties.storageprofile.osdisk.encryptionsettings.enabled }}
+                    "enabled": {{ 'true' if vm.properties.storageprofile.osdisk.encryptionsettings.enabled else 'false' }}
                 },
+                {% endif %}
                 "name": "{{ vm.properties.storageprofile.osdisk.name }}",
                 "vhd": {
                     "uri": "{{ vm.properties.storageprofile.osdisk.vhd.uri }}"
@@ -51,108 +53,147 @@
                     "uri": "{{ vm.properties.storageprofile.osdisk.image.uri }}"
                 },
                 "caching": "{{ vm.properties.storageprofile.osdisk.caching }}",
-                "createOption": "{{ vm.properties.storageprofile.osdisk.createoption }}",
-                "diskSizeGB": "{{ vm.properties.storageprofile.osdisk.disksizegb }}",
+                "createOption": "{{ vm.properties.storageprofile.osdisk.createoption }}"
+                {% if vm.properties.storageprofile.osdisk.disksizegb is defined %},"diskSizeGB": "{{ vm.properties.storageprofile.osdisk.disksizegb }}"{% endif %}
+                {% if vm.properties.storageprofile.osdisk.manageddisk is defined %},
                 "managedDisk": {
                     "id": "{{ vm.properties.storageprofile.osdisk.manageddisk.id }}",
                     "storageAccountType": "{{ vm.properties.storageprofile.osdisk.manageddisk.storageaccounttype }}"
                 }
-            },
+                {% endif %}
+            }
+            {% if vm.properties.storageprofile.datadisks is defined %},
             "dataDisks": [
                 {% for datadisk in vm.properties.storageprofile.datadisks %}
                 {
-                    "lun": "{{ vm.properties.storageprofile.datadisks[datadisk].lun }}",
-                    "name": "{{ vm.properties.storageprofile.datadisks[datadisk].name }}",
+                    "lun": "{{ datadisk.lun }}",
+                    "name": "{{ datadisk.name }}",
                     "vhd": {
-                        "uri": "{{ vm.properties.storageprofile.datadisks[datadisk].vhd.uri }}"
+                        "uri": "{{ datadisk.vhd.uri }}"
                     },
                     "image": {
-                        "uri": "{{ vm.properties.storageprofile.datadisks[datadisk].image.uri }}"
+                        "uri": "{{ datadisk.image.uri }}"
                     },
-                    "caching": "{{ vm.properties.storageprofile.datadisks[datadisk].caching }}",
-                    "createOption": "{{ vm.properties.storageprofile.datadisks[datadisk].createoption }}",
-                    "diskSizeGB": "{{ vm.properties.storageprofile.datadisks[datadisk].disksizegb }}",
+                    "caching": "{{ datadisk.caching }}",
+                    "createOption": "{{ datadisk.createoption }}",
+                    "diskSizeGB": "{{ datadisk.disksizegb }}",
                     "managedDisk": {
-                        "id": "{{ vm.properties.storageprofile.datadisks[datadisk].manageddisk.id }}",
-                        "storageAccountType": "{{ vm.properties.storageprofile.datadisks[datadisk].manageddisk.storageaccounttype }}"
+                        "id": "{{ datadisk.manageddisk.id }}",
+                        "storageAccountType": "{{ datadisk.manageddisk.storageaccounttype }}"
                     }
                 }
             {% endfor %}
             ]
-        },
+            {% endif %}
+        }
+    {%- endif -%}
+    {%- if vm.properties.osprofile is defined -%},
         "osProfile": {
             "computerName": "{{ vm.properties.osprofile.computername }}",
             "adminUsername": "{{ vm.properties.osprofile.adminusername }}",
-            "adminPassword": "{{ vm.properties.osprofile.adminpassword }}",
-            "customData": "{{ vm.properties.osprofile.customdata }}",
+            "adminPassword": "{{ vm.properties.osprofile.adminpassword }}"
+            {% if vm.properties.osprofile.customdata is defined %},"customData": "{{ vm.properties.osprofile.customdata }}"{% endif %}
+            {% if vm.properties.osprofile.windowsconfiguration is defined %},
             "windowsConfiguration": {
-                "provisionVMAgent": {{ vm.properties.osprofile.windowsconfiguration.provisionvmagent }},
-                "enableAutomaticUpdates": {{ vm.properties.osprofile.enableautomaticupdates }},
-                "timeZone": "{{ vm.properties.osprofile.timezone }}",
+                "provisionVMAgent": {{ 'true' if vm.properties.osprofile.windowsconfiguration.provisionvmagent else 'false' }},
+                "enableAutomaticUpdates": {{ 'true' if vm.properties.osprofile.windowsconfiguration.enableautomaticupdates else 'false' }}
+                {% if vm.properties.osprofile.windowsconfiguration.timezone is defined %},"timeZone": "{{ vm.properties.osprofile.windowsconfiguration.timezone }}"{% endif %}
+                {% if vm.properties.osprofile.windowsconfiguration.additionalunattendcontent is defined %},
                 "additionalUnattendContent": [
+                    {% for unattended in vm.properties.osprofile.windowsconfiguration.additionalunattendcontent %}
                     {
-                        "passName": "{{ vm.properties.osprofile.additionalunattendcontent.passname }}",
-                        "componentName": "{{ vm.properties.osprofile.additionalunattendcontent.componentname }}",
-                        "settingName": "{{ vm.properties.osprofile.additionalunattendcontent.settingname }}",
-                        "content": "{{ vm.properties.osprofile.additionalunattendcontent.content }}"
-                    }
-                ],
+                        "passName": "{{ unattended.passname }}",
+                        "componentName": "{{ unattended.componentname }}",
+                        "settingName": "{{ unattended.settingname }}",
+                        "content": "{{ unattended.content }}"
+                    }{{ "\n" if loop.last else "," }}
+                    {% endfor %}
+                ]
+                {% endif %}
+                {% if vm.properties.osprofile.windowsconfiguration.winrm is defined %},
                 "winRM": {
                     "listeners": [
+                        {% for listener in vm.properties.osprofile.windowsconfiguration.winrm.listeners %}
                         {
-                            "protocol": "{{ vm.properties.osprofile.winrm.listeners.protocol }}",
-                            "certificateUrl": "{{ vm.properties.osprofile.winrm.listeners.certificateurl }}"
-                        }
+                            "protocol": "{{ listener.protocol }}",
+                            "certificateUrl": "{{ listener.certificateurl }}"
+                        }{{ "\n" if loop.last else "," }}
+                        {% endfor %}
                     ]
                 }
-            },
+                {% endif %}
+            }
+            {% endif %}
+            {% if vm.properties.osprofile.linuxconfiguration is defined %},
             "linuxConfiguration": {
-                "disablePasswordAuthentication": {{ vm.properties.osprofile.linuxconfiguration.disablepasswordauthentication }},
+                "disablePasswordAuthentication": {{ 'true' if vm.properties.osprofile.linuxconfiguration.disablepasswordauthentication else 'false' }}
+                {% if vm.properties.osprofile.linuxconfiguration.ssh is defined %},
                 "ssh": {
                     "publicKeys": [
+                        {% for key in vm.properties.osprofile.linuxconfiguration.ssh.publickeys %}
                         {
-                            "path": "{{ vm.properties.osprofile.linuxconfiguration.ssh.publickeys.path }}",
-                            "keyData": "{{ vm.properties.osprofile.linuxconfiguration.ssh.publickeys.keydata }}"
-                        }
+                            "path": "{{ vm.properties.osprofile.linuxconfiguration.ssh.publickeys[key].path }}",
+                            "keyData": "{{ vm.properties.osprofile.linuxconfiguration.ssh.publickeys[key].keydata }}"
+                        }{{ "\n" if loop.last else "," }}
+                        {% endfor %}
                     ]
                 }
-            },
+                {% endif %}
+            }
+            {% endif %}
+            {% if vm.properties.osprofile.secrets is defined %},
             "secrets": [
+                {% for vault in vm.properties.osprofile.secrets %}
                 {
                     "sourceVault": {
-                        "id": "{{ vm.properties.osprofile.secrets.sourcevault.id }}"
+                        "id": "{{ vault.sourcevault.id }}"
                     },
                     "vaultCertificates": [
+                        {% for cert in vault.vaultcertificates %}
                         {
-                            "certificateUrl": "{{ vm.properties.osprofile.secrets.vaultcertificates.certificateurl }}",
-                            "certificateStore": "{{ vm.properties.osprofile.secrets.vaultcertificates.certificatestore }}"
-                        }
+                            "certificateUrl": "{{ cert.certificateurl }}",
+                            "certificateStore": "{{ cert.certificatestore }}"
+                        }{{ "\n" if loop.last else "," }}
+                        {% endfor %}
                     ]
-                }
+                }{{ "\n" if loop.last else "," }}
+                {% endfor %}
             ]
-        },
+            {% endif %}
+        }
+    {%- endif -%}
+    {%- if vm.properties.networkprofile is defined -%},
         "networkProfile": {
             "networkInterfaces": [
+                {% for nic in vm.properties.networkprofile.networkinterfaces %}
                 {
-                    "id": "{{ vm.properties.networkprofile.networkinterfaces.id }}",
+                    "id": "{{ nic.id }}",
                     "properties": {
-                        "primary": {{ vm.properties.networkprofile.networkinterfaces.properties.primary }}
+                        "primary": {{ 'true' if nic.properties.primary else 'false' }}
                     }
-                }
+                }{{ "\n" if loop.last else "," }}
+                {% endfor %}
             ]
-        },
+        }
+    {%- endif -%}
+    {%- if vm.properties.diagnosticsprofile is defined -%},
         "diagnosticsProfile": {
             "bootDiagnostics": {
-                "enabled": {{ vm.properties.diagnosticspprofile.bootdiagnostics.enabled }},
-                "storageUri": "{{ vm.properties.diagnosticspprofile.bootdiagnostics.storageuri }}"
+                "enabled": {{ 'true' if vm.properties.diagnosticsprofile.bootdiagnostics.enabled else 'false'}},
+                "storageUri": "{{ vm.properties.diagnosticsprofile.bootdiagnostics.storageuri }}"
             }
-        },
+        }
+    {%- endif -%}
+    {%- if vm.properties.availabilityset is defined -%},
         "availabilitySet": {
             "id": "{{ vm.properties.availabilityset.id }}"
-        },
+        }
+    {%- endif -%}
+    {%- if vm.properties.licensetype is defined -%},
         "licenseType": "{{ vm.properties.licensetype }}"
+    {%- endif %}
     },
     "resources": [
     ]
-    }
+}
 {%- endmacro -%}

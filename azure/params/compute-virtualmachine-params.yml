@@ -9,7 +9,7 @@ virtualmachine:
     promotioncode:
   properties:
     hardwareprofile:
-      vmsize:
+      vmsize: 'string'
     storageprofile:
       imagereference:
         id: 'string'
@@ -62,27 +62,28 @@ virtualmachine:
         provisionvmagent: bool
         enableautomaticupdates: bool
         timezone: 'string'
-        additionalunattendContent:
+        additionalunattendcontent:
           - passname: 'string'
             componentname: 'string'
             settingname: 'string'
             content: 'string'
         winrm:
           listeners:
-            protocol: 'string'
-            certificateurl: 'string'
+            - protocol: 'string'
+              certificateurl: 'string'
       linuxconfiguration:
         disablepasswordauthentication: bool
         ssh:
           publickeys:
-            - path: 'string'
-              keydata: 'string'
+            - $myusername:
+                path: 'string'
+                keydata: 'string'
       secrets:
-        sourcevault:
-          id: 'string'
-        vaultcertificates:
-          certificateurl: 'string'
-          certificatestore: 'string'
+        - sourcevault:
+            id: 'string'
+          vaultcertificates:
+            certificateurl: 'string'
+            certificatestore: 'string'
     networkprofile:
       networkinterfaces:
         - id: 'string'
@@ -93,5 +94,5 @@ virtualmachine:
         enabled: bool
         storageuri: 'sting'
     availabilityset:
-      id:
+      id: 'string'
     licensetype: 'string'
